@@ -1,27 +1,8 @@
 import json
 import datetime
 
-# def search_birthday():
-#     # look in the database if the birthday exists and return the birthday if found
-#     name = input("Whose birthday are you looking for?")
-#
-#     # open the json file
-#     database = load_database()
-#
-#     # look for the name as a key in the dictionary
-#     if name in database.keys():
-#         # if found return the date
-#         print("we found "+name+'\'s birthday, it is',database[name])
-#     else:
-#         # if not return an error
-#         print("no birthday found for", name)
-
 
 def write_birthday(name):
-    # writing to the database
-    # # input a name
-    # name = input("please enter your name")
-
     # input a date
     date_string  = input("please enter your birthday, format is dd/mm/yyyy")
     date = datetime.datetime.strptime(date_string, "%d/%m/%Y")
@@ -42,6 +23,19 @@ def load_database():
     return database
 
 
+def get_same_age(name):
+    import math
+    database = load_database()
+    date = datetime.datetime.strptime(database[name], "%d/%m/%Y")
+    now = datetime.datetime.now()
+    age =math.floor((now - date).days/365.2425)
+
+    for k,v in database.items():
+        date = datetime.datetime.strptime(database[k], "%d/%m/%Y")
+        if math.floor((now - date).days/365.2425) == age:
+            print('{} as the same age as {}, {} years!' .format(k,name, age))
+
+
 while True:
     # ask the user if they want to search for a birthday or add a new one
     name = input("please enter a name:")
@@ -52,8 +46,13 @@ while True:
     database = load_database()
     if name in database:
         print("we found " + name + '\'s birthday, it is', database[name])
+        if input('do you want to see if there are more people with the same age?') == 'y':
+            get_same_age(name)
+
     else:
-        write_birthday(name)
+        if input('we didnt find that name in the database, do you want to add it?') == 'y':
+            write_birthday(name)
+
 
 
 # json.load(f) #loads from a file previously opened
